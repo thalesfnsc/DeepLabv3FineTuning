@@ -116,3 +116,7 @@ class SegmentationDataset(VisionDataset):
                 sample["image"] = self.transforms(sample["image"])
                 sample["mask"] = self.transforms(sample["mask"])
             return sample
+        
+    def decode_target(cls, mask):
+        """decode semantic mask to RGB image"""
+        return cls.cmap[mask]
