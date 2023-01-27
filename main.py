@@ -32,6 +32,7 @@ def main(data_directory, exp_directory, epochs, batch_size):
     model = createDeepLabv3()
     model.train()
     data_directory = Path(data_directory)
+    print('DATA DIRECTORY:',data_directory)
     # Create the experiment directory if not present
     exp_directory = Path(exp_directory)
     if not exp_directory.exists():
