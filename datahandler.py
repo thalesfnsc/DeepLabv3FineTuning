@@ -77,7 +77,8 @@ def get_dataloader_single_folder(data_dir: str,
         dataloaders: Returns dataloaders dictionary containing the
         Train and Test dataloaders.
     """
-    data_transforms = transforms.Compose([transforms.ToTensor()])
+    #Adding transforms.Resize() to fix images with different values of width e lenght
+    data_transforms = transforms.Compose([transforms.ToTensor(),transforms.Resize((720,720))])
 
     image_datasets = {
         x: SegmentationDataset(data_dir,
