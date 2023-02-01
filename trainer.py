@@ -48,15 +48,11 @@ def train_model(model, criterion, dataloaders, optimizer, metrics, bpath,
                 with torch.set_grad_enabled(phase == 'Train'):
                     outputs = model(inputs)
                     loss = criterion(outputs['out'], masks)
-                    print('OUTPUTS SHAPE:',outputs['out'].shape)
-                    print('MASKS SHAPE:',masks.shape)
+                    #Replicating the mask for other channels
+                    masks = masks.repeat(1,3,1,1)
+
                     y_pred = outputs['out'].data.cpu().numpy().ravel()
                     y_true = masks.data.cpu().numpy().ravel()
-
-                    print("Y PRED SHAPE:",y_pred.shape)
-                    print("Y TRUE SHAPE:",y_true.shape)
-                    
-
                     for name, metric in metrics.items():
                         if name == 'f1_score':
                             # Use a classification threshold of 0.1
