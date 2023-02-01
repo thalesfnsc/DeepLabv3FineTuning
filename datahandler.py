@@ -78,7 +78,7 @@ def get_dataloader_single_folder(data_dir: str,
         Train and Test dataloaders.
     """
     #Adding transforms.Resize() to fix images with different values of width e lenght
-    data_transforms = transforms.Compose([transforms.ToTensor(),transforms.Resize((720,720))])
+    data_transforms = transforms.Compose([transforms.ToTensor(),transforms.Resize((540,540))])
 
     image_datasets = {
         x: SegmentationDataset(data_dir,
@@ -94,7 +94,7 @@ def get_dataloader_single_folder(data_dir: str,
         x: DataLoader(image_datasets[x],
                       batch_size=batch_size,
                       shuffle=True,
-                      num_workers=8)
+                      num_workers=2)
         for x in ['Train', 'Test']
     }
     return dataloaders
