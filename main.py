@@ -19,7 +19,7 @@ from trainer import train_model
               help="Specify the experiment directory.")
 @click.option(
     "--epochs",
-    default=25,
+    default=10,
     type=int,
     help="Specify the number of epochs you want to run the experiment for.")
 @click.option("--batch-size",
@@ -40,8 +40,9 @@ def main(data_directory, exp_directory, epochs, batch_size):
 
     # Specify the loss function
     criterion = torch.nn.MSELoss(reduction='mean')
-    # Specify the optimizer with a lower learning rate
-    optimizer = torch.optim.Adam(model.parameters(), lr=1e-4)
+    
+    # Setting the optimizer with only classifier parameters
+    optimizer = torch.optim.Adam(model.classifier.parameters(), lr=1e-4)
 
     # Specify the evaluation metrics
     metrics = {'f1_score': f1_score, 'auroc': roc_auc_score}

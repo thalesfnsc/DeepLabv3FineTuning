@@ -21,6 +21,7 @@ def createDeepLabv3(outputchannels=3):
       params.requires_grad_(False)
 
     model.classifier = DeepLabHead(2048, outputchannels)
+    
     # Set the model in training mode
     model.classifier.requires_grad_(True)
     model.train()
