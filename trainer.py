@@ -48,7 +48,7 @@ def train_model(model, criterion, dataloaders, optimizer, metrics, bpath,
                 with torch.set_grad_enabled(phase == 'Train'):
                     outputs = model(inputs)
                     #Replicating the mask for other channels
-                    masks = masks.repeat(1,3,1,1)
+                    #masks = masks.repeat(1,3,1,1)
                     loss = criterion(outputs['out'], masks)
 
                     y_pred = outputs['out'].data.cpu().numpy().ravel()

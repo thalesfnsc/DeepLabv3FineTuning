@@ -4,6 +4,7 @@ from torch.utils.data import DataLoader
 from torchvision import transforms
 
 from segdataset import SegmentationDataset
+from torchvision.transforms.transforms import InterpolationMode
 
 
 def get_dataloader_sep_folder(data_dir: str,
@@ -78,7 +79,7 @@ def get_dataloader_single_folder(data_dir: str,
         Train and Test dataloaders.
     """
     #Adding transforms.Resize() to fix images with different values of width e lenght
-    data_transforms = transforms.Compose([transforms.ToTensor(),transforms.Resize((540,540))])
+    data_transforms = transforms.Compose([transforms.ToTensor(),transforms.Resize((540,540),InterpolationMode.NEAREST)])
 
     image_datasets = {
         x: SegmentationDataset(data_dir,

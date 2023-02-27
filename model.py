@@ -3,7 +3,7 @@ from torchvision.models.segmentation.deeplabv3 import DeepLabHead
 from torchvision import models
 
 
-def createDeepLabv3(outputchannels=3):
+def createDeepLabv3(outputchannels=1):
     """DeepLabv3 class with custom head
 
     Args:
