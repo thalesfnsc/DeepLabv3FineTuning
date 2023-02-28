@@ -6,7 +6,7 @@ import time
 import numpy as np
 import torch
 from tqdm import tqdm
-
+import torch.nn.functional as F
 
 def train_model(model, criterion, dataloaders, optimizer, metrics, bpath,
                 num_epochs):
@@ -44,11 +44,16 @@ def train_model(model, criterion, dataloaders, optimizer, metrics, bpath,
                 # zero the parameter gradients
                 optimizer.zero_grad()
 
+                
                 # track history if only in train
                 with torch.set_grad_enabled(phase == 'Train'):
                     outputs = model(inputs)
-                    #Replicating the mask for other channels
-                    #masks = masks.repeat(1,3,1,1)
+
+                    #One-hot encoding mask
+                    masks = torch.nn.functional.one_hot(masks.to(torch.long),3)
+                    masks = torch.squeeze(masks,1)
+                    masks = torch.transpose(masks,1,3)
+                    
                     loss = criterion(outputs['out'], masks)
 
                     y_pred = outputs['out'].data.cpu().numpy().ravel()
