@@ -48,14 +48,13 @@ def train_model(model, criterion, dataloaders, optimizer, metrics, bpath,
                 # track history if only in train
                 with torch.set_grad_enabled(phase == 'Train'):
                     outputs = model(inputs)
-
+                    #Replacing not integer value in mask for one-hot
+                    masks = torch.where(torch.isin(masks,masks.unique()[1]),2,masks)                    
                     #One-hot encoding mask
                     masks = torch.nn.functional.one_hot(masks.to(torch.long),3)
                     masks = torch.squeeze(masks,1)
-                    masks = torch.transpose(masks,1,3)
-                    
-                    loss = criterion(outputs['out'], masks)
-
+                    masks = torch.transpose(masks,1,3)                
+                    loss = criterion(outputs['out'], masks.to(torch.float32))
                     y_pred = outputs['out'].data.cpu().numpy().ravel()
                     y_true = masks.data.cpu().numpy().ravel()
                     for name, metric in metrics.items():
