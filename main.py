@@ -39,8 +39,10 @@ def main(data_directory, exp_directory, epochs, batch_size):
         exp_directory.mkdir()
 
     # Specify the loss function
-    criterion = torch.nn.MSELoss(reduction='mean')
+    #criterion = torch.nn.MSELoss(reduction='mean')
     
+    # Setting the cross entropy loss
+    criterion = torch.nn.CrossEntropyLoss()
     # Setting the optimizer with only classifier parameters
     optimizer = torch.optim.Adam(model.classifier.parameters(), lr=1e-4)
 
