@@ -8,6 +8,25 @@ import torch
 from tqdm import tqdm
 import torch.nn.functional as F
 
+def Dice_loss(pred, target):
+    """This definition generalize to real valued pred and target vector.
+This should be differentiable.
+    pred: tensor with first dimension as batch
+    target: tensor with first dimension as batch
+    """
+
+    smooth = 1.
+
+    # have to use contiguous since they may from a torch.view op
+    iflat = pred.contiguous().view(-1)
+    tflat = target.contiguous().view(-1)
+    intersection = (iflat * tflat).sum()
+
+    A_sum = torch.sum(tflat * iflat)
+    B_sum = torch.sum(tflat * tflat)
+    
+    return 1 - ((2. * intersection + smooth) / (A_sum + B_sum + smooth) )
+
 def train_model(model, criterion, dataloaders, optimizer, metrics, bpath,
                 num_epochs):
     since = time.time()
@@ -16,6 +35,7 @@ def train_model(model, criterion, dataloaders, optimizer, metrics, bpath,
     # Use gpu if available
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
     model.to(device)
+  
     # Initialize the log file for training and testing loss and metrics
     fieldnames = ['epoch', 'Train_loss', 'Test_loss'] + \
         [f'Train_{m}' for m in metrics.keys()] + \
@@ -54,7 +74,11 @@ def train_model(model, criterion, dataloaders, optimizer, metrics, bpath,
                     masks = torch.nn.functional.one_hot(masks.to(torch.long),3)
                     masks = torch.squeeze(masks,1)
                     masks = torch.transpose(masks,1,3)                
-                    loss = criterion(outputs['out'], masks.to(torch.float32))
+                    ce_loss = criterion(outputs['out'], masks.to(torch.float32))
+                    
+                    dice_loss = Dice_loss(outputs['out'],masks)
+
+                    loss = dice_loss + ce_loss
                     y_pred = outputs['out'].data.cpu().numpy().ravel()
                     y_true = masks.data.cpu().numpy().ravel()
                     for name, metric in metrics.items():
